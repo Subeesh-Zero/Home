@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Image Gallery - TechShop</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            padding: 0.8rem 1rem;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #fff !important;
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #f1c40f !important;
+        }
+
+        .gallery-container {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Exactly 3 images per row */
+            gap: 1.5rem;
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .image-card {
+            border: none;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+        }
+
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .no-images {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            padding: 2rem;
+        }
+
+        /* Full-Screen Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #f1c40f;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+            text-align: center;
+        }
+
+
+        footer .copyright {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 767.98px) {
+            .gallery-title {
+                font-size: 1.5rem;
+            }
+
+            .image-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 images per row on mobile */
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .image-card img {
+                height: 150px;
+            }
+
+            .image-modal img {
+                max-width: 95%;
+                max-height: 85%;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .image-grid {
+                grid-template-columns: repeat(3, 1fr); /* Keep 3 images per row on tablets */
+                gap: 1.2rem;
+            }
+
+            .image-card img {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">TechShop</a>
+            <a class="nav-link" href="index.html">Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="container gallery-container">
+        <h2 class="gallery-title" id="product-title"></h2>
+        <div class="image-grid" id="image-grid"></div>
+    </div>
+
+    <div class="image-modal" id="image-modal">
+        <span class="close-modal" onclick="closeModal()">×</span>
+        <img id="modal-image" src="" alt="Full-screen image">
+    </div>
+
+    <footer>
+            © 2023 TechShop. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbzgYxAZf9ADM3BiwSZ-slQ8gN0y0SM-aooZ7tM87hK8vinp6o3ZrclGxykJsBhtCw/exec";
+
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                sheet: params.get('sheet'),
+                id: parseInt(params.get('id'), 10)
+            };
+        }
+
+        function fetchProduct(sheetName, productId) {
+            fetch(`${API_URL}?action=getProductById&sheet=${sheetName}&id=${productId}`)
+                .then(response => response.json())
+                .then(product => {
+                    if (Object.keys(product).length === 0) {
+                        $("#image-grid").html(`
+                            <div class="no-images">
+                                <p>Product not found.</p>
+                            </div>
+                        `);
+                    } else {
+                        $("#product-title").text(product.title);
+                        if (product.images && product.images.length > 0) {
+                            product.images.forEach(image => {
+                                $("#image-grid").append(`
+                                    <div class="image-card" onclick="openModal('${image}')">
+                                        <img src="${image}" alt="${product.title}">
+                                    </div>
+                                `);
+                            });
+                        } else {
+                            $("#image-grid").html(`
+                                <div class="no-images">
+                                    <p>No images available for this product.</p>
+                                </div>
+                            `);
+                        }
+                    }
+                    $(".loading-overlay").hide();
+                })
+                .catch(error => {
+                    console.error("Error fetching product:", error);
+                    $("#image-grid").html(`
+                        <div class="no-images">
+                            <p>Error loading product images.</p>
+                        </div>
+                    `);
+                    $(".loading-overlay").hide();
+                });
+        }
+
+        function openModal(imageSrc) {
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            modalImage.src = imageSrc;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            modal.style.display = 'none';
+        }
+
+        $(document).on('click', '.image-modal', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        $(document).ready(() => {
+            const { sheet, id } = getQueryParams();
+            if (sheet && id) {
+                fetchProduct(sheet, id);
+            } else {
+                $("#image-grid").html(`
+                    <div class="no-images">
+                        <p>Invalid product or sheet.</p>
+                    </div>
+                `);
+                $(".loading-overlay").hide();
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
