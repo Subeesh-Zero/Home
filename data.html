@@ -3,83 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Image Gallery - TechShop</title>
+    <title>Product Gallery - TechShop</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f5f6f5;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
         }
 
         .navbar {
-            padding: 0.8rem 1rem;
-            background: linear-gradient(135deg, #2c3e50, #3498db);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #1a2a44, #2b6cb0);
+            padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .navbar-brand {
             font-weight: 700;
-            letter-spacing: -0.5px;
+            font-size: 1.5rem;
             color: #fff !important;
+            letter-spacing: -0.5px;
         }
 
         .nav-link {
-            color: #fff !important;
+            color: #e6e6e6 !important;
             font-weight: 500;
             transition: color 0.3s ease;
         }
 
         .nav-link:hover {
-            color: #f1c40f !important;
+            color: #ffd700 !important;
         }
 
         .gallery-container {
-            margin-top: 2rem;
-            margin-bottom: 2rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .gallery-title {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
+            font-weight: 700;
+            color: #1a2a44;
             text-align: center;
-            font-size: 2rem;
+            font-size: 2.25rem;
+            margin-bottom: 1.5rem;
         }
 
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Exactly 3 images per row */
-            gap: 1.5rem;
-            padding: 1.5rem;
-            max-width: 1200px;
-            margin: 0 auto;
+        /* Toggle Button Styles */
+        .view-toggle {
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
 
-        .image-card {
+        .toggle-btn {
+            padding: 0.75rem 1.5rem;
             border: none;
-            background: #fff;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #2b6cb0, #1a4971);
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-btn:hover {
+            background: linear-gradient(135deg, #1a4971, #2b6cb0);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Carousel Styles */
+        .carousel {
+            max-width: 100%;
+            width: 1000px;
+            margin: 0 auto;
             border-radius: 12px;
             overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-inner img {
+            width: 100%;
+            height: 500px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 8px;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+            background: rgba(0, 0, 0, 0.4);
+            transition: background 0.3s ease;
+        }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            font-size: 1.5rem;
+        }
+
+        /* List View Styles */
+        .list-view {
+            max-width: 100%;
+            width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            justify-content: center;
+        }
+
+        .list-item {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
 
-        .image-card:hover {
+        .list-item:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
-        .image-card img {
+        .list-item img {
             width: 100%;
-            height: 200px;
+            height: 150px;
             object-fit: cover;
-            border-radius: 12px 12px 0 0;
         }
 
         .no-images {
@@ -87,9 +162,10 @@
             font-size: 1.2rem;
             color: #666;
             padding: 2rem;
+            width: 100%;
         }
 
-        /* Full-Screen Modal */
+        /* Modal Styles */
         .image-modal {
             display: none;
             position: fixed;
@@ -97,7 +173,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 2000;
             justify-content: center;
             align-items: center;
@@ -108,6 +184,7 @@
             max-height: 90%;
             object-fit: contain;
             border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .close-modal {
@@ -121,7 +198,7 @@
         }
 
         .close-modal:hover {
-            color: #f1c40f;
+            color: #ffd700;
         }
 
         .loading-overlay {
@@ -130,7 +207,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -140,63 +217,90 @@
         .loading-overlay .spinner-border {
             width: 3rem;
             height: 3rem;
+            color: #2b6cb0;
         }
 
         footer {
-            background: linear-gradient(135deg, #2c3e50, #3498db);
-            color: white;
+            background: linear-gradient(135deg, #1a2a44, #2b6cb0);
+            color: #fff;
             padding: 2rem 0;
             margin-top: auto;
             text-align: center;
         }
 
-
         footer .copyright {
-            margin-top: 1rem;
             font-size: 0.9rem;
+            opacity: 0.8;
         }
 
+        /* Responsive Design */
         @media (max-width: 767.98px) {
+            .gallery-container {
+                padding: 0 0.5rem;
+            }
+
             .gallery-title {
-                font-size: 1.5rem;
+                font-size: 1.75rem;
             }
 
-            .image-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2 images per row on mobile */
-                gap: 1rem;
-                padding: 1rem;
+            .carousel {
+                width: 100%;
             }
 
-            .image-card img {
-                height: 150px;
+            .carousel-inner img {
+                height: 300px;
             }
 
-            .image-modal img {
-                max-width: 95%;
-                max-height: 85%;
+            .list-view {
+                width: 100%;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0.75rem;
+            }
+
+            .list-item img {
+                height: 120px;
+            }
+
+            .toggle-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
             }
         }
 
         @media (min-width: 768px) and (max-width: 991.98px) {
-            .image-grid {
-                grid-template-columns: repeat(3, 1fr); /* Keep 3 images per row on tablets */
-                gap: 1.2rem;
+            .carousel {
+                width: 100%;
             }
 
-            .image-card img {
-                height: 180px;
+            .carousel-inner img {
+                height: 400px;
+            }
+
+            .list-view {
+                width: 100%;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+
+        @media (min-width: 992px) {
+            .carousel {
+                width: 1000px;
+            }
+
+            .list-view {
+                width: 1000px;
             }
         }
     </style>
 </head>
 <body>
     <div class="loading-overlay">
-        <div class="spinner-border text-primary" role="status">
+        <div class="spinner-border" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">TechShop</a>
             <a class="nav-link" href="index.html">Back to Home</a>
@@ -205,7 +309,23 @@
 
     <div class="container gallery-container">
         <h2 class="gallery-title" id="product-title"></h2>
-        <div class="image-grid" id="image-grid"></div>
+        <div class="view-toggle">
+            <button class="toggle-btn" id="view-toggle-btn">
+                <i class="fas fa-sliders-h"></i> Slider View
+            </button>
+        </div>
+        <div id="slider-view" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" id="carousel-inner"></div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#slider-view" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#slider-view" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        <div id="list-view" class="list-view" style="display: none;"></div>
     </div>
 
     <div class="image-modal" id="image-modal">
@@ -214,12 +334,14 @@
     </div>
 
     <footer>
-            © 2023 TechShop. All rights reserved.
+        <div class="copyright">
+            © 2025 TechShop. All rights reserved.
         </div>
     </footer>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzgYxAZf9ADM3BiwSZ-slQ8gN0y0SM-aooZ7tM87hK8vinp6o3ZrclGxykJsBhtCw/exec";
+        let isSliderView = true;
 
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
@@ -234,7 +356,12 @@
                 .then(response => response.json())
                 .then(product => {
                     if (Object.keys(product).length === 0) {
-                        $("#image-grid").html(`
+                        $("#carousel-inner").html(`
+                            <div class="no-images">
+                                <p>Product not found.</p>
+                            </div>
+                        `);
+                        $("#list-view").html(`
                             <div class="no-images">
                                 <p>Product not found.</p>
                             </div>
@@ -242,15 +369,26 @@
                     } else {
                         $("#product-title").text(product.title);
                         if (product.images && product.images.length > 0) {
-                            product.images.forEach(image => {
-                                $("#image-grid").append(`
-                                    <div class="image-card" onclick="openModal('${image}')">
+                            product.images.forEach((image, index) => {
+                                const activeClass = index === 0 ? 'active' : '';
+                                $("#carousel-inner").append(`
+                                    <div class="carousel-item ${activeClass}">
+                                        <img src="${image}" class="d-block w-100" alt="${product.title}">
+                                    </div>
+                                `);
+                                $("#list-view").append(`
+                                    <div class="list-item" onclick="openModal('${image}')">
                                         <img src="${image}" alt="${product.title}">
                                     </div>
                                 `);
                             });
                         } else {
-                            $("#image-grid").html(`
+                            $("#carousel-inner").html(`
+                                <div class="no-images">
+                                    <p>No images available for this product.</p>
+                                </div>
+                            `);
+                            $("#list-view").html(`
                                 <div class="no-images">
                                     <p>No images available for this product.</p>
                                 </div>
@@ -261,7 +399,12 @@
                 })
                 .catch(error => {
                     console.error("Error fetching product:", error);
-                    $("#image-grid").html(`
+                    $("#carousel-inner").html(`
+                        <div class="no-images">
+                            <p>Error loading product images.</p>
+                        </div>
+                    `);
+                    $("#list-view").html(`
                         <div class="no-images">
                             <p>Error loading product images.</p>
                         </div>
@@ -299,13 +442,31 @@
             if (sheet && id) {
                 fetchProduct(sheet, id);
             } else {
-                $("#image-grid").html(`
+                $("#carousel-inner").html(`
+                    <div class="no-images">
+                        <p>Invalid product or sheet.</p>
+                    </div>
+                `);
+                $("#list-view").html(`
                     <div class="no-images">
                         <p>Invalid product or sheet.</p>
                     </div>
                 `);
                 $(".loading-overlay").hide();
             }
+
+            $('#view-toggle-btn').click(function() {
+                isSliderView = !isSliderView;
+                if (isSliderView) {
+                    $('#slider-view').show();
+                    $('#list-view').hide();
+                    $(this).html('<i class="fas fa-sliders-h"></i> Slider View');
+                } else {
+                    $('#slider-view').hide();
+                    $('#list-view').show();
+                    $(this).html('<i class="fas fa-th-list"></i> List View');
+                }
+            });
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
